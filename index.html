@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Aplikasi Kasir</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ===================== SCREEN: LAPORAN (KIRI) ===================== -->
+  <section id="screen-laporan" class="screen">
+    <header class="screen-header">
+      <h1>Laporan</h1>
+    </header>
+
+    <div class="report-grid">
+      <div class="report-card">
+        <h3>Hari Ini</h3>
+        <div class="report-row"><span>Pendapatan</span><b id="rep-hari-pendapatan">Rp0</b></div>
+        <div class="report-row"><span>Pengeluaran</span><b id="rep-hari-pengeluaran">Rp0</b></div>
+        <div class="report-row total"><span>Sisa</span><b id="rep-hari-sisa">Rp0</b></div>
+      </div>
+
+      <div class="report-card">
+        <h3>Minggu Ini</h3>
+        <div class="report-row"><span>Pendapatan</span><b id="rep-minggu-pendapatan">Rp0</b></div>
+        <div class="report-row"><span>Pengeluaran</span><b id="rep-minggu-pengeluaran">Rp0</b></div>
+        <div class="report-row total"><span>Sisa</span><b id="rep-minggu-sisa">Rp0</b></div>
+      </div>
+
+      <div class="report-card">
+        <h3>Bulan Ini</h3>
+        <div class="report-row"><span>Pendapatan</span><b id="rep-bulan-pendapatan">Rp0</b></div>
+        <div class="report-row"><span>Pengeluaran</span><b id="rep-bulan-pengeluaran">Rp0</b></div>
+        <div class="report-row total"><span>Sisa</span><b id="rep-bulan-sisa">Rp0</b></div>
+      </div>
+    </div>
+
+    <div class="history-box">
+      <h3>Riwayat Transaksi (7 hari terakhir)</h3>
+      <div id="riwayat-list" class="history-list"></div>
+    </div>
+
+    <button id="btn-reset-data" class="danger-btn">Hapus Semua Data</button>
+  </section>
+
+  <!-- ===================== SCREEN: KASIR (TENGAH) ===================== -->
+  <section id="screen-kasir" class="screen active">
+    <header class="screen-header kasir-header">
+      <div>
+        <span class="label">Pendapatan Hari Ini</span>
+        <h1 id="pendapatan-hari-ini">Rp0</h1>
+      </div>
+      <button id="btn-kelola-menu" class="ghost-btn">Kelola Menu</button>
+    </header>
+
+    <div class="category-tabs">
+      <button class="cat-tab active" data-cat="matcha">Matcha</button>
+      <button class="cat-tab" data-cat="kopi">Kopi</button>
+      <button class="cat-tab" data-cat="refreshment">Refreshment</button>
+    </div>
+
+    <div id="menu-grid" class="menu-grid"></div>
+
+    <div id="total-bar" class="total-bar hidden">
+      <div class="total-info">
+        <span>Total Belanja</span>
+        <b id="total-belanja">Rp0</b>
+      </div>
+      <span class="tap-hint">Ketuk untuk bayar &rarr;</span>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: PENGELUARAN (KANAN) ===================== -->
+  <section id="screen-pengeluaran" class="screen">
+    <header class="screen-header">
+      <h1>Catatan Pengeluaran</h1>
+      <div class="pengeluaran-summary">
+        <div><span>Pendapatan</span><b id="peng-pendapatan">Rp0</b></div>
+        <div><span>Pengeluaran</span><b id="peng-pengeluaran">Rp0</b></div>
+        <div class="net"><span>Bersih</span><b id="peng-bersih">Rp0</b></div>
+      </div>
+    </header>
+
+    <form id="form-pengeluaran" class="expense-form">
+      <input type="text" id="input-desc" placeholder="Keterangan pengeluaran" required>
+      <input type="number" id="input-amount" placeholder="Jumlah (Rp)" min="0" required>
+      <button type="submit">Tambah</button>
+    </form>
+
+    <div id="pengeluaran-list" class="expense-list"></div>
+  </section>
+
+  <!-- ===================== BOTTOM NAV ===================== -->
+  <nav class="bottom-nav">
+    <button class="nav-btn" data-screen="laporan">
+      <span class="nav-icon">📊</span>
+      <span>Laporan</span>
+    </button>
+    <button class="nav-btn active" data-screen="kasir">
+      <span class="nav-icon">🧾</span>
+      <span>Kasir</span>
+    </button>
+    <button class="nav-btn" data-screen="pengeluaran">
+      <span class="nav-icon">📝</span>
+      <span>Pengeluaran</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- ===================== MODAL: PEMBAYARAN ===================== -->
+<div id="modal-bayar" class="modal-overlay hidden">
+  <div class="modal-box">
+    <h2>Pembayaran</h2>
+    <div class="pay-row"><span>Total Belanja</span><b id="pay-total">Rp0</b></div>
+
+    <label for="input-uang-diterima">Uang Diterima</label>
+    <input type="number" id="input-uang-diterima" placeholder="0" min="0">
+
+    <div class="pay-row change-row"><span>Kembalian</span><b id="pay-kembalian">Rp0</b></div>
+
+    <div class="modal-actions">
+      <button id="btn-batal-bayar" class="ghost-btn">Batal</button>
+      <button id="btn-selesai-bayar" class="primary-btn">Selesai</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: KELOLA MENU ===================== -->
+<div id="modal-menu" class="modal-overlay hidden">
+  <div class="modal-box">
+    <h2>Kelola Menu</h2>
+
+    <form id="form-tambah-menu" class="menu-form">
+      <select id="input-menu-cat">
+        <option value="matcha">Matcha</option>
+        <option value="kopi">Kopi</option>
+        <option value="refreshment">Refreshment</option>
+      </select>
+      <input type="text" id="input-menu-nama" placeholder="Nama menu" required>
+      <input type="number" id="input-menu-harga" placeholder="Harga" min="0" required>
+      <button type="submit">Tambah Menu</button>
+    </form>
+
+    <div id="kelola-menu-list" class="kelola-menu-list"></div>
+
+    <div class="modal-actions">
+      <button id="btn-tutup-menu" class="primary-btn">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
